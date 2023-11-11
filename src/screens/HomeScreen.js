@@ -1,14 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet,Text, View, ScrollView, FlatList } from 'react-native';
 import COLORS from "../constants/Colors";
+import FONTS from "../constants/Fonts";
 import GenreCard from "../components/GenreCard";
+import MovieCard from "../components/MovieCard";
 import ItemSeparator from "../components/ItemSeparator";
+import { getNowPlayingMovies } from "../services/MovieService";
+
 
 const Genres = ["All", "Action", "Comedy", "Romance", "Horror", "Sci-Fi"];
 
 const HomeScreen = () => {
   const [activeGenre, setActiveGenre] = useState("All")
+  const [nowPlayingMovies, setNowPlayingMovies] = useState({})
+
+  useEffect(() => {
+    getNowPlayingMovies().then((movieResponse) => 
+    setNowPlayingMovies(movieResponse.data)
+    );
+  }, []);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -39,6 +50,21 @@ const HomeScreen = () => {
         )}
       />
       </View>
+
+      <View>
+        <FlatList
+          data={nowPlayingMovies.results}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          keyExtractor={(item) => item.id.toString()}
+          ItemSeparatorComponent={() => <ItemSeparator width={20}/>}
+          ListHeaderComponent={() => <ItemSeparator width={20}/>}
+          ListFooterComponent={() => <ItemSeparator width={20}/>}
+          renderItem= {({item}) => (
+            <MovieCard title={item.title} language={item.original_language} voteAverage={item.vote_average} voteCount={item.vote_count} poster={item.poster_path}/>
+            )}
+        />
+      </View>
     </ScrollView>
   );
 }
@@ -51,18 +77,18 @@ const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    allignItems: "center",
+    alignItems: "center",
     paddingHorizontal: 20,
     paddingVertical: 10,
   },
   headerTittle:{
     fontSize: 28,
-    fontFamily: "Regular",
+    fontFamily: FONTS.REGULAR,
   },
   headerSubtittle: {
     fontSize: 13,
     color: COLORS.ACTIVE,
-    fontFamily: "Bold",
+    fontFamily: FONTS.BOLD,
   },
   genreListContainer:{
     paddingVertical: 10,
