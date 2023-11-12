@@ -16,9 +16,14 @@ const HomeScreen = () => {
   const [nowPlayingMovies, setNowPlayingMovies] = useState({})
 
   useEffect(() => {
-    getNowPlayingMovies().then((movieResponse) => 
-    setNowPlayingMovies(movieResponse.data)
-    );
+    getNowPlayingMovies()
+      .then((movieResponse) => {
+        console.log("Now Playing Movies:", movieResponse.data);
+        setNowPlayingMovies(movieResponse.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching now playing movies:", error);
+      });
   }, []);
 
   return (
@@ -45,7 +50,7 @@ const HomeScreen = () => {
           <GenreCard 
           genreName={item} 
           active={item === activeGenre ? true : false}
-          onPress={setActiveGenre}
+          onPress={() => setActiveGenre(item)}
           />
         )}
       />
@@ -61,7 +66,12 @@ const HomeScreen = () => {
           ListHeaderComponent={() => <ItemSeparator width={20}/>}
           ListFooterComponent={() => <ItemSeparator width={20}/>}
           renderItem= {({item}) => (
-            <MovieCard title={item.title} language={item.original_language} voteAverage={item.vote_average} voteCount={item.vote_count} poster={item.poster_path}/>
+            <MovieCard 
+            title={item.title} 
+            language={item.original_language} 
+            voteAverage={item.vote_average} 
+            voteCount={item.vote_count} 
+            poster={item.poster_path}/>
             )}
         />
       </View>

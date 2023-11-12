@@ -3,14 +3,14 @@ import { View, Text, StyleSheet, TouchableOpacity, ImageBackground } from "react
 import { Ionicons } from '@expo/vector-icons'; 
 import COLORS from "../constants/Colors";
 import Fonts from "../constants/Fonts";
-import { getPoster } from "../services/MovieService";
+import { getPoster, getLanguage } from "../services/MovieService";
 
-const MovieCard = (title, poster, language, voteAverage,voteCount) => {
+const MovieCard = ({title, poster, language, voteAverage,voteCount, size}) => {
     return (
-        <TouchableOpacity>
+        <TouchableOpacity activeOpacity={0.8}>
             <ImageBackground 
             style={styles.container} 
-            source={{uri: getPoster(getPoster)}}
+            source={{uri: getPoster(poster)}}
             imageStyle={{borderRadius: 12}}            
             >
                 <Text>
@@ -23,14 +23,14 @@ const MovieCard = (title, poster, language, voteAverage,voteCount) => {
                     {title}
                 </Text>
                 <View style={styles.movieSubTittleContainer}>
-                    <Text style={styles.movieSubTittle}>{language}</Text>
+                    <Text style={styles.movieSubTittle}>{getLanguage(language).english_name}</Text>
                     <View style={styles.rowAndCenter} >
                         <Ionicons name="heart" 
                             size={17}
                             color={COLORS.HEART}
                             style={{marginRight:5}} 
                         />
-                        <Text style={styles.movieSubTittle}>{voteAverage}</Text>
+                        <Text style={styles.movieSubTittle}>{voteCount}</Text>
                     </View>
                 </View>
             </View>
